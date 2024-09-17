@@ -8,12 +8,23 @@ public static class Arrays
     /// <returns>array of doubles that are the multiples of the supplied number</returns>
     public static double[] MultiplesOf(double number, int length)
     {
-        // TODO Problem 1 Start
-        // Remember: Using comments in your program, write down your process for solving this problem
-        // step by step before you write the code. The plan should be clear enough that it could
-        // be implemented by another person.
+        //
+        // 1. Create a new array of doubles with the specified length
+        // 2. Using a loop, fill the array with multiples of the number
+        // 3. For each index i, calculate the multiple as: number * (i + 1)
+        // 4. Return the filled array
 
-        return []; // replace this return statement with your own
+        //1.
+        double[] result = new double[length];
+        //2.
+        for (int i = 0; i < length; i++)
+        {
+            //3.
+            result[i] = number * (i + 1);
+        }
+
+        //4.
+        return result;
     }
 
     /// <summary>
@@ -25,9 +36,27 @@ public static class Arrays
     /// </summary>
     public static void RotateListRight(List<int> data, int amount)
     {
-        // TODO Problem 2 Start
-        // Remember: Using comments in your program, write down your process for solving this problem
-        // step by step before you write the code. The plan should be clear enough that it could
-        // be implemented by another person.
+        // Plan:
+        // 1. Create a temporary list to store the rotated elements
+        // 2. Copy the last 'amount' elements from the original list to the temporary list
+        // 3. Copy the remaining elements from the beginning of the original list to the temporary list
+        // 4. Clear the original list
+        // 5. Copy all elements from the temporary list back to the original list
+
+
+        // 1.
+        List<int> temp = new List<int>(data.Count);
+
+        // 2.
+        temp.AddRange(data.GetRange(data.Count - amount, amount));
+
+        // 3. 
+        temp.AddRange(data.GetRange(0, data.Count - amount));
+
+        // 4. 
+        data.Clear();
+
+        // 5. 
+        data.AddRange(temp);
     }
 }
