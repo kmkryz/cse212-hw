@@ -13,6 +13,7 @@
 
 using Microsoft.VisualBasic.FileIO;
 
+
 public class Basketball
 {
     public static void Run()
@@ -23,14 +24,32 @@ public class Basketball
         reader.TextFieldType = FieldType.Delimited;
         reader.SetDelimiters(",");
         reader.ReadFields(); // ignore header row
-        while (!reader.EndOfData) {
+        while (!reader.EndOfData)
+        {
             var fields = reader.ReadFields()!;
             var playerId = fields[0];
             var points = int.Parse(fields[8]);
+
+            if (players.ContainsKey(playerId))
+            {
+                players[playerId] += points;
+            }
+            else
+            {
+                players[playerId] = points;
+            }
         }
 
-        Console.WriteLine($"Players: {{{string.Join(", ", players)}}}");
+        // Convert the dictionary to a list of KeyValuePair and sort it by points in descending order
+        var topPlayers = players.ToList();
+        topPlayers.Sort((pair1, pair2) => pair2.Value.CompareTo(pair1.Value));
 
-        var topPlayers = new string[10];
+        // Display the top 10 players
+        Console.WriteLine("Top 10 Players with the Highest Total Points:");
+        Console.WriteLine("Rank\tPlayer ID\tTotal Points");
+        for (int i = 0; i < Math.Min(10, topPlayers.Count); i++)
+        {
+            Console.WriteLine($"{i + 1}\t{topPlayers[i].Key}\t{topPlayers[i].Value}");
+        }
     }
 }
