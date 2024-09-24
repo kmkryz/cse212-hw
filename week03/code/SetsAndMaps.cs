@@ -1,5 +1,6 @@
 using System.Text.Json;
 
+
 public static class SetsAndMaps
 {
     /// <summary>
@@ -21,8 +22,24 @@ public static class SetsAndMaps
     /// <param name="words">An array of 2-character words (lowercase, no duplicates)</param>
     public static string[] FindPairs(string[] words)
     {
-        // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        HashSet<string> seenWords = new HashSet<string>();
+        List<string> result = new List<string>();
+
+        foreach (string word in words)
+        {
+            string reversedWord = new string(word.Reverse().ToArray());
+
+            if (seenWords.Contains(reversedWord))
+            {
+                result.Add($"{reversedWord} & {word}");
+            }
+            else
+            {
+                seenWords.Add(word);
+            }
+        }
+
+        return result.ToArray();
     }
 
     /// <summary>
@@ -35,14 +52,24 @@ public static class SetsAndMaps
     /// file.
     /// </summary>
     /// <param name="filename">The name of the file to read</param>
-    /// <returns>fixed array of divisors</returns>
+    /// <returns>A dictionary where the key is the degree and the value is the count of people with that degree</returns>
     public static Dictionary<string, int> SummarizeDegrees(string filename)
     {
         var degrees = new Dictionary<string, int>();
+
         foreach (var line in File.ReadLines(filename))
         {
             var fields = line.Split(",");
-            // TODO Problem 2 - ADD YOUR CODE HERE
+            var degree = fields[3].Trim();
+
+            if (degrees.ContainsKey(degree))
+            {
+                degrees[degree]++;
+            }
+            else
+            {
+                degrees[degree] = 1;
+            }
         }
 
         return degrees;
@@ -66,8 +93,48 @@ public static class SetsAndMaps
     /// </summary>
     public static bool IsAnagram(string word1, string word2)
     {
-        // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+        // Normalize the words: convert to lowercase and remove spaces
+        word1 = new string(word1.ToLower().Where(c => !char.IsWhiteSpace(c)).ToArray());
+        word2 = new string(word2.ToLower().Where(c => !char.IsWhiteSpace(c)).ToArray());
+
+        // If the lengths are different, they cannot be anagrams
+        if (word1.Length != word2.Length)
+        {
+            return false;
+        }
+
+        // Create dictionaries to count the frequency of each letter
+        var letterCount1 = new Dictionary<char, int>();
+        var letterCount2 = new Dictionary<char, int>();
+
+        // Count the frequency of each letter in word1
+        foreach (char c in word1)
+        {
+            if (letterCount1.ContainsKey(c))
+            {
+                letterCount1[c]++;
+            }
+            else
+            {
+                letterCount1[c] = 1;
+            }
+        }
+
+        // Count the frequency of each letter in word2
+        foreach (char c in word2)
+        {
+            if (letterCount2.ContainsKey(c))
+            {
+                letterCount2[c]++;
+            }
+            else
+            {
+                letterCount2[c] = 1;
+            }
+        }
+
+        // Compare the two dictionaries
+        return letterCount1.Count == letterCount2.Count && !letterCount1.Except(letterCount2).Any();
     }
 
     /// <summary>
@@ -96,11 +163,16 @@ public static class SetsAndMaps
 
         var featureCollection = JsonSerializer.Deserialize<FeatureCollection>(json, options);
 
-        // TODO Problem 5:
-        // 1. Add code in FeatureCollection.cs to describe the JSON using classes and properties 
-        // on those classes so that the call to Deserialize above works properly.
-        // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
-        // 3. Return an array of these string descriptions.
-        return [];
+        var summaries = new List<string>();
+
+        foreach (var feature in featureCollection.Features)
+        {
+            if (feature.Properties.Mag.HasValue && !string.IsNullOrEmpty(feature.Properties.Place))
+            {
+                summaries.Add($"{feature.Properties.Place} - Mag {feature.Properties.Mag.Value}");
+            }
+        }
+
+        return summaries.ToArray();
     }
 }
